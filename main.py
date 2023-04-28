@@ -1,4 +1,5 @@
 import requests
+import argparse
 import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
@@ -54,4 +55,23 @@ def download_img(url, folder='images/'):
     return filepath
 
 
+def main():
+    parser = argparse.ArgumentParser(description='Getting books')
+    parser.add_argument('start_id', nargs='?', type=int, default=1,
+                        help='book_id for start, must be >= 1')
+    parser.add_argument('end_id', nargs='?', type=int, default=10,
+                        help='book_id for end, must be >= start_id')
+    args = parser.parse_args()
 
+    for book in range(args.start_id, args.end_id):
+        url = f'https://tululu.org/b{book}/'
+        try:
+            parser_page = parse_book_page(get_response(url).text)
+            download_txt(book, parser_page['title'])
+            download_img(parser_page['img'])
+        except requests.HTTPError:
+            print(f'book with number {book} is absent')
+
+
+if __name__ == '__main__':
+    main()
