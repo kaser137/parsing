@@ -24,7 +24,15 @@ def parsing_book(book_id):
     soup = BeautifulSoup(r.text, 'lxml')
     title, author = soup.find('h1').text.split('::')
     img = urljoin('https://tululu.org/', soup.find(class_='bookimage').find('img')['src'])
-    return {'title': title.strip(), 'author': author.strip(), 'img': img}
+    comments = soup.find_all( class_='texts')
+    genres = soup.find('span', class_='d_book').find_all('a')
+    return {
+        'title': title.strip(),
+        'author': author.strip(),
+        'img': img,
+        'comments': [comment.find(class_='black').text for comment in comments],
+        'genres': [genre.text for genre in genres]
+    }
 
 
 def download_txt(book_id, name, folder='books/'):
@@ -33,8 +41,8 @@ def download_txt(book_id, name, folder='books/'):
     r = get_response(url)
     filename = f'{sanitize_filename(name)}.txt'
     filepath = os.path.join(folder, filename)
-    with open(filepath, 'w') as file:
-        file.write(r.text)
+    # with open(filepath, 'w') as file:
+    #     file.write(r.text)
     return filepath
 
 
@@ -53,6 +61,8 @@ for i in range(1,11):
     try:
         url = f'https://tululu.org/txt.php?id={i}'
         r = get_response(url)
-        download_img(parsing_book(i)['img'])
+        parser = parsing_book(i)
+        print(parser['title'])
+        print(parser['genres'], '\n')
     except requests.HTTPError:
         continue
