@@ -11,20 +11,18 @@ def check_for_redirect(r):
         raise requests.HTTPError
 
 
-def get_response(url, params={}):
+def get_response(url, params=None):
     response = requests.get(url, params=params)
     response.raise_for_status()
     check_for_redirect(response)
     return response
 
 
-def parsing_book(book_id):
-    url = f'https://tululu.org/b{book_id}'
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'lxml')
+def parse_book_page(html_content):
+    soup = BeautifulSoup(html_content, 'lxml')
     title, author = soup.find('h1').text.split('::')
     img = urljoin('https://tululu.org/', soup.find(class_='bookimage').find('img')['src'])
-    comments = soup.find_all( class_='texts')
+    comments = soup.find_all(class_='texts')
     genres = soup.find('span', class_='d_book').find_all('a')
     return {
         'title': title.strip(),
@@ -41,8 +39,8 @@ def download_txt(book_id, name, folder='books/'):
     r = get_response(url)
     filename = f'{sanitize_filename(name)}.txt'
     filepath = os.path.join(folder, filename)
-    # with open(filepath, 'w') as file:
-    #     file.write(r.text)
+    with open(filepath, 'w') as file:
+        file.write(r.text)
     return filepath
 
 
@@ -57,12 +55,3 @@ def download_img(url, folder='images/'):
 
 
 
-for i in range(1,11):
-    try:
-        url = f'https://tululu.org/txt.php?id={i}'
-        r = get_response(url)
-        parser = parsing_book(i)
-        print(parser['title'])
-        print(parser['genres'], '\n')
-    except requests.HTTPError:
-        continue
