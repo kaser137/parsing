@@ -7,17 +7,18 @@ from pathvalidate import sanitize_filename
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit, unquote
 from time import sleep
-import main
+import parse_tululu
 
-def main1():
+
+def main():
     parser = argparse.ArgumentParser(description='Getting books')
-    parser.add_argument('--start_page', type=int, default=1,
+    parser.add_argument('-s', '--start_page', type=int, default=1,
                         help='page for start, must be >= 1')
-    parser.add_argument('--end_page', type=int, default=701,
+    parser.add_argument('-e', '--end_page', type=int, default=701,
                         help='page for end, must be >= start_id')
     args = parser.parse_args()
-    for page in range(args.start_page, args.end_page+1):
-        url =f'https://tululu.org/l55/{page}/'
+    for page in range(args.start_page, args.end_page + 1):
+        url = f'https://tululu.org/l55/{page}/'
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'lxml')
@@ -27,9 +28,9 @@ def main1():
             book_id = book.select_one('a')['href'][2:-1]
             url = f'https://tululu.org/b{book_id}/'
             try:
-                book_details = main.parse_book_page(main.get_response(url))
-                main.download_txt(book_id, book_details['title'])
-                main.download_img(book_details['img'])
+                book_details = parse_tululu.parse_book_page(parse_tululu.get_response(url))
+                parse_tululu.download_txt(book_id, book_details['title'])
+                parse_tululu.download_img(book_details['img'])
                 book_info = {
                     'title': book_details['title'],
                     'author': book_details['author'],
@@ -40,12 +41,10 @@ def main1():
                 }
                 books_json = json.dumps(book_info, indent=0, ensure_ascii=False, separators=(', ', ': '))
                 with open('books.json', 'a', encoding='utf8') as file:
-                    file.write(books_json+',\n')
+                    file.write(books_json + ',\n')
             except requests.HTTPError:
                 print(f'book with number {book_id} is absent')
 
 
 if __name__ == '__main__':
-    main1()
-
-
+    main()
