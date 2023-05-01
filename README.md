@@ -42,7 +42,7 @@ python parse_tululu_category.py --start_page [or -s] 25 --end_page [or -e] 50
 - По умолчанию скачанные книги и обложки будут сохранены в папках "media/books", "media/images". Если папки отсутствуют, скрипт их создаст.
 - Вы можете указать папки, например:
 ```commandline
-python parse_tululu_category.py --dest_folder [or -f]'Папка для книг и обложек' --json_path [or -j]'Папка для файла с информацией щ книгах' 
+python parse_tululu_category.py --dest_folder [or -f]'Папка для книг и обложек' --json_path [or -j]'Папка для файла с информацией о книгах' 
 ```
 
 Вы можете выключить загрузку книг или обложек, например:
