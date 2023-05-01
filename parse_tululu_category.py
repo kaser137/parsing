@@ -16,10 +16,10 @@ def main():
                         help='page for end, must be >= start_id')
     parser.add_argument('-f', '--dest_folder', type=str, default='media',
                         help='folder for library')
-    parser.add_argument('-i', '--skip_imgs',  help='type anything for --skip_imgs for skip getting images')
-    parser.add_argument('-t', '--skip_txt', help='type anything for --skip_imgs for skip getting books')
+    parser.add_argument('-i', '--skip_imgs',  action='store_true', help='for skip getting images')
+    parser.add_argument('-t', '--skip_txt', action='store_true', help='for skip getting books')
     parser.add_argument('-j', '--json_path', type=str, default='media',
-                        help='folder for file "books.json"')
+                        help='folder for file with info about getting books "books.json"')
     args = parser.parse_args()
     Path(Path.cwd() / args.dest_folder).mkdir(parents=True, exist_ok=True)
     Path(Path.cwd() / args.json_path).mkdir(parents=True, exist_ok=True)
