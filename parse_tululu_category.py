@@ -11,15 +11,15 @@ import main
 
 
 books_info = []
-for i in range(1, 11):
+for i in range(1, 2):
     url =f'https://tululu.org/l55/{i}/'
     response = requests.get(url)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, 'lxml')
-    books_on_page = soup.find_all(class_='d_book')
+    books_on_page = soup.select('.d_book ')
     for book in books_on_page:
-        bookpath = urljoin(response.url, book.find('a')['href'])
-        book_id = book.find('a')['href'][2:-1]
+        bookpath = urljoin(response.url, book.select_one('a')['href'])
+        book_id = book.select_one('a')['href'][2:-1]
         url = f'https://tululu.org/b{book_id}/'
         try:
             book_details = main.parse_book_page(main.get_response(url))

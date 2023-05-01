@@ -29,15 +29,15 @@ def get_response(url, params=None, attempt_timeout=5):
 
 def parse_book_page(response):
     soup = BeautifulSoup(response.text, 'lxml')
-    title, author = soup.find('h1').text.split('::')
-    img_src = urljoin(response.url, soup.find(class_='bookimage').find('img')['src'])
-    comments = soup.find_all(class_='texts')
-    genres = soup.find('span', class_='d_book').find_all('a')
+    title, author = soup.select_one('h1').text.split('::')
+    img_src = urljoin(response.url, soup.select_one('.bookimage img')['src'])
+    comments = soup.select('.texts .black')
+    genres = soup.select('span.d_book a')
     return {
         'title': title.strip(),
         'author': author.strip(),
         'img': img_src,
-        'comments': [comment.find(class_='black').text for comment in comments],
+        'comments': [comment.text for comment in comments],
         'genres': [genre.text for genre in genres]
     }
 
