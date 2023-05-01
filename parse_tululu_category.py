@@ -1,10 +1,9 @@
 import requests
 import argparse
 import json
+import sys
 from bs4 import BeautifulSoup
-from pathvalidate import sanitize_filename
 from pathlib import Path
-from urllib.parse import urlsplit, unquote
 import parse_tululu
 
 
@@ -23,36 +22,38 @@ def main():
     args = parser.parse_args()
     Path(Path.cwd() / args.dest_folder).mkdir(parents=True, exist_ok=True)
     Path(Path.cwd() / args.json_path).mkdir(parents=True, exist_ok=True)
+    books_specifics = []
     for page in range(args.start_page, args.end_page + 1):
         url = f'https://tululu.org/l55/{page}/'
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'lxml')
-        books_on_page = soup.select('.d_book ')
-        for book in books_on_page:
-            book_id = book.select_one('a')['href'][2:-1]
-            url = f'https://tululu.org/b{book_id}/'
-            try:
-                book_details = parse_tululu.parse_book_page(parse_tululu.get_response(url))
-                book_info = {
-                    'title': book_details['title'],
-                    'author': book_details['author'],
-                }
-                if not args.skip_imgs:
-                    parse_tululu.download_img(book_details['img'], Path(args.dest_folder, 'images/'))
-                    book_info['img_src'] = \
-                        f'{args.dest_folder}/images/{unquote(urlsplit(book_details["img"]).path).split("/")[-1]}'
-                if not args.skip_txt:
-                    parse_tululu.download_txt(book_id, book_details['title'], Path(args.dest_folder, 'books/'))
-                    book_info['book_path'] = f'{args.dest_folder}/books/{sanitize_filename(book_details["title"])}.txt'
-                book_info['comments'] = book_details['comments']
-                book_info['genres'] = book_details['genres']
-                books_json = json.dumps(book_info, indent=0, ensure_ascii=False, separators=(', ', ': '))
-                with open(Path(args.json_path, 'books.json'), 'a', encoding='utf8') as file:
-                    file.write(books_json + ',\n')
-                print(url)
-            except requests.HTTPError:
-                print(f'book with number {book_id} is absent')
+        try:
+            response = parse_tululu.get_response(url)
+            soup = BeautifulSoup(response.text, 'lxml')
+            books_on_page = soup.select('.d_book ')
+            for book in books_on_page:
+                book_id = book.select_one('a')['href'][2:-1]
+                url = f'https://tululu.org/b{book_id}/'
+                try:
+                    book_details = parse_tululu.parse_book_page(parse_tululu.get_response(url))
+                    book_specifics = {
+                        'title': book_details['title'],
+                        'author': book_details['author'],
+                    }
+                    if not args.skip_imgs:
+                        img_src = parse_tululu.download_img(book_details['img'], Path(args.dest_folder, 'images/'))
+                        book_specifics['img_src'] = img_src
+                    if not args.skip_txt:
+                        book_path = parse_tululu.download_txt(book_id, book_details['title'],
+                                                              Path(args.dest_folder, 'books/'))
+                        book_specifics['book_path'] = book_path
+                    book_specifics['comments'] = book_details['comments']
+                    book_specifics['genres'] = book_details['genres']
+                    books_specifics.append(book_specifics)
+                except requests.HTTPError:
+                    print(f'book with number {book_id} is absent')
+        except requests.HTTPError as err:
+            print(f'during request has occurred such error: {err}', file=sys.stderr)
+    with open(Path(args.json_path, 'books.json'), 'w', encoding='utf8') as file:
+        json.dump(books_specifics, file, indent=0, ensure_ascii=False)
 
 
 if __name__ == '__main__':

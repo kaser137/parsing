@@ -1,6 +1,5 @@
 import requests
 import argparse
-import os
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
 from pathlib import Path
@@ -48,20 +47,20 @@ def download_txt(book_id, name, folder=Path('books/')):
     params = {'id': book_id}
     response = get_response(url, params=params)
     filename = f'{sanitize_filename(name)}.txt'
-    filepath = os.path.join(folder, filename)
+    filepath = Path(folder, filename)
     with open(filepath, 'w', encoding="utf-8") as file:
         file.write(response.text)
-    return filepath
+    return filepath.as_posix()
 
 
 def download_img(url, folder=Path('images/')):
     Path(Path.cwd() / folder).mkdir(parents=True, exist_ok=True)
     filename = unquote(urlsplit(url).path).split('/')[-1]
     response = get_response(url)
-    filepath = os.path.join(folder, sanitize_filename(filename))
+    filepath = Path(folder, sanitize_filename(filename))
     with open(filepath, 'wb') as file:
         file.write(response.content)
-    return filepath
+    return filepath.as_posix()
 
 
 def main():
