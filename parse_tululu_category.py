@@ -42,6 +42,7 @@ def main():
                 books_json = json.dumps(book_info, indent=0, ensure_ascii=False, separators=(', ', ': '))
                 with open('books.json', 'a', encoding='utf8') as file:
                     file.write(books_json + ',\n')
+                print(url)
             except requests.HTTPError:
                 print(f'book with number {book_id} is absent')
 
