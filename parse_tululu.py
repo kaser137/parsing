@@ -42,7 +42,7 @@ def parse_book_page(response):
     }
 
 
-def download_txt(book_id, name, folder='books/'):
+def download_txt(book_id, name, folder=Path('books/')):
     Path(folder).mkdir(parents=True, exist_ok=True)
     url = f'https://tululu.org/txt.php'
     params = {'id': book_id}
@@ -54,7 +54,7 @@ def download_txt(book_id, name, folder='books/'):
     return filepath
 
 
-def download_img(url, folder='images/'):
+def download_img(url, folder=Path('images/')):
     Path(Path.cwd() / folder).mkdir(parents=True, exist_ok=True)
     filename = unquote(urlsplit(url).path).split('/')[-1]
     response = get_response(url)
