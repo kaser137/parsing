@@ -28,7 +28,8 @@ def on_reload():
         template = env.get_template('template.html')
         rendered_page = template.render(
             books_col=books_col,
-            prev=Path(Path.cwd(), 'pages', f'index{num_page-1}.html').as_posix() if num_page else Path(Path.cwd(), 'pages', f'index{num_page}.html').as_posix(),
+            prev=Path(Path.cwd(), 'pages', f'index{num_page-1}.html').as_posix() if num_page
+            else Path(Path.cwd(), 'pages', f'index{num_page}.html').as_posix(),
             next=Path(Path.cwd(), 'pages', f'index{num_page+1}.html').as_posix()
 
         )
