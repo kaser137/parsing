@@ -15,6 +15,7 @@ books = json.loads(books_json)
 
 for book in books:
     book['book_path'] = f'../{quote(book["book_path"])}'
+    book['genres'] = ' '.join(book['genres'])
 
 
 def on_reload():
@@ -28,22 +29,13 @@ def on_reload():
             loader=FileSystemLoader('.'),
             autoescape=select_autoescape(['html', 'xml']))
         template = env.get_template('template.html')
-        if num_page == 1:
-            prev = num_page
-            next = num_page + 1
-        elif num_page == pages_quantity:
-            prev = num_page - 1
-            next = num_page
-        else:
-            prev = num_page - 1
-            next = num_page + 1
         rendered_page = template.render(
             books_split_for_columns=books_split_for_columns,
             pages_quantity=pages_quantity,
-            prev=f'../pages/index{prev}.html',
-            next=f'../pages/index{next}.html',
+            prev=f'../pages/index{num_page-1}.html',
+            next=f'../pages/index{num_page+1}.html',
             current=lambda x: f'../pages/index{x}.html',
-            num_page=num_page
+            num_page=num_page,
         )
         with open(Path('pages', f'index{num_page}.html'), 'w', encoding="utf-8") as file:
             file.write(rendered_page)
