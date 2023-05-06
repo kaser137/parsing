@@ -19,7 +19,7 @@ def main():
         Path(Path.cwd() / 'pages').mkdir(parents=True, exist_ok=True)
         books_pages = list(chunked(books, 20))
 
-        for num_page, books_on_page in enumerate(books_pages, 1):
+        for number_page, books_on_page in enumerate(books_pages, 1):
             books_split_for_columns = list(chunked(books_on_page, 2))
             pages_quantity = len(books_pages)
             env = Environment(
@@ -29,19 +29,19 @@ def main():
             rendered_page = template.render(
                 books_split_for_columns=books_split_for_columns,
                 pages_quantity=pages_quantity,
-                prev=f'../pages/index{num_page - 1}.html',
-                next=f'../pages/index{num_page + 1}.html',
-                current=lambda x: f'../pages/index{x}.html',
-                num_page=num_page,
+                prev_page=f'../pages/index{number_page - 1}.html',
+                next_page=f'../pages/index{number_page + 1}.html',
+                current_page=lambda x: f'../pages/index{x}.html',
+                number_page=number_page,
             )
-            with open(Path('pages', f'index{num_page}.html'), 'w', encoding="utf-8") as file:
-                file.write(rendered_page)
+            with open(Path('pages', f'index{number_page}.html'), 'w', encoding="utf-8") as file_html:
+                file_html.write(rendered_page)
 
-    on_reload()
-    server = Server()
-    server.watch('template.html', on_reload)
-    server.serve(default_filename='pages/index1.html')
+    return on_reload()
 
 
 if __name__ == '__main__':
     main()
+    server = Server()
+    server.watch('template.html', main)
+    server.serve(default_filename='pages/index1.html')
