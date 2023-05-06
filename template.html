@@ -11,12 +11,34 @@
     <title>Hello, world!</title>
   </head>
   <body>
-    <div class="container">
-      <div class="mt-2 mb-3">
-        <p class="h4"><a href={{prev}} >prev</a>***<a href={{next}} >next</a></p>
-      </div>
+    <div class="mt-3 mb-5">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if num_page==1 %}
+            <li class="page-item disabled">
+              <a class="page-link" href={{prev}} tabindex="-1" aria-disabled="true">Назад</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href={{prev}}>Назад</a></li>
+          {% endif %}
+          {% for page in range(1, pages_quantity+1) %}
+            {% if page==num_page %}
+              <li class="page-item active" aria-current="page">
+              <a class="page-link" href={{current(page)}}>{{page}} <span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li class="page-item" aria-current="page">
+              <a class="page-link" href={{current(page)}}>{{page}}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if num_page==pages_quantity %}
+            <li class="page-item disabled">
+              <a class="page-link" href={{prev}} tabindex="-1" aria-disabled="true">Вперёд</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href={{next}}>Вперёд</a></li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
-  {% for books in books_col %}
+  {% for books in books_split_for_columns %}
     <div class="container">
     <div class="row">
     {% for book in books %}
@@ -42,11 +64,33 @@
     </div>
     </div>
     {% endfor %}
-      <div class="container">
-        <div class="mt-0 mb-4">
-          <p class="h4"><a href={{prev}} >prev</a>***<a href={{next}} >next</a></p>
-        </div>
-      </div>
+    <div class="mt-3 mb-5">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {% if num_page==1 %}
+            <li class="page-item disabled">
+              <a class="page-link" href={{prev}} tabindex="-1" aria-disabled="true">Назад</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href={{prev}}>Назад</a></li>
+          {% endif %}
+          {% for page in range(1, pages_quantity+1) %}
+            {% if page==num_page %}
+              <li class="page-item active" aria-current="page">
+              <a class="page-link" href={{current(page)}}>{{page}} <span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li class="page-item" aria-current="page">
+              <a class="page-link" href={{current(page)}}>{{page}}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if num_page==pages_quantity %}
+            <li class="page-item disabled">
+              <a class="page-link" href={{prev}} tabindex="-1" aria-disabled="true">Вперёд</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href={{next}}>Вперёд</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
