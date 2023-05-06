@@ -58,7 +58,7 @@ python render_books.py
 - Будет создана папка "pages" с файлами index[i].html (по 20 книг на страницу).
 - Локальная версия: файл `pages/index1.html` или перейти по [ссылке](http://127.0.0.1:5500/pages/index1.html)
 - Версия на [Git](https://kaser137.github.io/parsing/pages/index1.html)
-- Вы попадёте на [страницу](static/Screenshot_books.png) 
+- Вы попадёте на [страницу](/static/Screenshot_books.png) 
 - Программа будет отслеживать изменения в `template.html`
 
 ## Цели проекта
