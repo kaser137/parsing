@@ -57,7 +57,7 @@ python render_books.py
 ```
 - Можно указать папку для файла `books.json` (по умолчанию "media/books.json") :
 ```commandline
-python render_website.py -b [--books_details_path] newdirectory/subdirectoty
+python render_website.py -b [or --books_details_path] newdirectory/subdirectoty
 ```
 - Будет создана папка "pages" с файлами index[i].html (по 20 книг на страницу).
 - Локальная версия: файл `pages/index1.html` или перейти по [ссылке](http://127.0.0.1:5500/pages/index1.html)
