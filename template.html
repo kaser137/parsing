@@ -35,32 +35,34 @@
         </ul>
       </nav>
     </div>
-  {% for books_details in books_split_for_columns %}
-    <div class='container'>
-      <div class='row'>
-        {% for book_details in books_details %}
-          <div class='col'>
-            <div class='card mb-3' style='max-width: 540px;'>
-              <div class='row no-gutters'>
-                <div class='col-md-4'>
-                  <img src={{book_details.img_src}} class='card-img' alt='обложка {{book_details.title}}' title='жанры {{book_details.genres}}'>
-                </div>
-                <div class='col-md-8'>
-                  <div class='card-body'>
-                    <h5 class='card-title'>{{book_details.title}}</h5>
-                    <h5 class='card-title'>{{book_details.author}}.</h5>
-                    <p class='card-text' style='font-size:100%'>{{book_details.genres}}</p>
-                    <a href={{book_details.book_path}} target='_blank' rel='noopener noreferrer'>Читать</a>
+    <div>
+      {% for books_details in books_cards_in_row %}
+        <div class='container'>
+          <div class='row'>
+            {% for book_details in books_details %}
+              <div class='col'>
+                <div class='card mb-3' style='max-width: 540px;'>
+                  <div class='row no-gutters'>
+                    <div class='col-md-4'>
+                      <img src={{book_details.img_src}} class='card-img' alt='обложка {{book_details.title}}' title='жанры {{book_details.genres}}'>
+                    </div>
+                    <div class='col-md-8'>
+                      <div class='card-body'>
+                        <h5 class='card-title'>{{book_details.title}}</h5>
+                        <h5 class='card-title'>{{book_details.author}}.</h5>
+                        <p class='card-text' style='font-size:100%'>{{book_details.genres}}</p>
+                        <a href={{book_details.book_path}} target='_blank' rel='noopener noreferrer'>Читать</a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            {% endfor %}
+            <div class='w-100'></div>
           </div>
-        {% endfor %}
-        <div class='w-100'></div>
-      </div>
+        </div>
+      {% endfor %}
     </div>
-    {% endfor %}
     <div class='mx-auto mb-6' style='width: 350px'>
       <nav aria-label='Page navigation example'>
         <ul class='pagination' style='padding-top: 5px'>
